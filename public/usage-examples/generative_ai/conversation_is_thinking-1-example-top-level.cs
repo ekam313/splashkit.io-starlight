@@ -1,33 +1,52 @@
 using SplashKitSDK;
 using static SplashKitSDK.SplashKit;
 
-Conversation chat = CreateConversation();
+Conversation chat = CreateConversation(
+    LanguageModel.Qwen306BThinking
+);
 
-string question =
-    "Which is heavier, one kilogram of steel or one kilogram " +
-    "of feathers? Explain briefly.";
+string question = "What is 2 plus 2? Give only the answer.";
 
 WriteLine("Question: " + question);
 WriteLine("");
-WriteLine("Thinking:");
 
 // Send the question to the language model
 ConversationAddMessage(chat, question);
 
-bool showingThoughts = true;
+bool thinkingStarted = false;
+bool thinkingFinished = false;
+bool replyHeadingShown = false;
 
 while (ConversationIsReplying(chat))
 {
-    // Separate thinking content from the final reply
-    if (showingThoughts && !ConversationIsThinking(chat))
+    bool isThinking = ConversationIsThinking(chat);
+
+    // Display messages when the thinking state changes
+    if (isThinking && !thinkingStarted)
     {
-        WriteLine("");
-        WriteLine("");
-        WriteLine("Final reply:");
-        showingThoughts = false;
+        WriteLine("The model is thinking...");
+        thinkingStarted = true;
     }
 
-    Write(ConversationGetReplyPiece(chat));
+    if (!isThinking && thinkingStarted && !thinkingFinished)
+    {
+        WriteLine("Thinking done.");
+        thinkingFinished = true;
+    }
+
+    string replyPiece = ConversationGetReplyPiece(chat);
+
+    if (!isThinking)
+    {
+        if (!replyHeadingShown)
+        {
+            WriteLine("");
+            WriteLine("Final reply:");
+            replyHeadingShown = true;
+        }
+
+        Write(replyPiece);
+    }
 }
 
 WriteLine("");

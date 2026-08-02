@@ -2,33 +2,50 @@
 
 int main()
 {
-    conversation chat = create_conversation();
+    conversation chat = create_conversation(QWEN3_0_6B_THINKING);
 
-    string question =
-        "Which is heavier, one kilogram of steel or one kilogram "
-        "of feathers? Explain briefly.";
+    string question = "What is 2 plus 2? Give only the answer.";
 
     write_line("Question: " + question);
     write_line("");
-    write_line("Thinking:");
 
     // Send the question to the language model
     conversation_add_message(chat, question);
 
-    bool showing_thoughts = true;
+    bool thinking_started = false;
+    bool thinking_finished = false;
+    bool reply_heading_shown = false;
 
     while (conversation_is_replying(chat))
     {
-        // Separate thinking content from the final reply
-        if (showing_thoughts && !conversation_is_thinking(chat))
+        bool is_thinking = conversation_is_thinking(chat);
+
+        // Display messages when the thinking state changes
+        if (is_thinking && !thinking_started)
         {
-            write_line("");
-            write_line("");
-            write_line("Final reply:");
-            showing_thoughts = false;
+            write_line("The model is thinking...");
+            thinking_started = true;
         }
 
-        write(conversation_get_reply_piece(chat));
+        if (!is_thinking && thinking_started && !thinking_finished)
+        {
+            write_line("Thinking done.");
+            thinking_finished = true;
+        }
+
+        string reply_piece = conversation_get_reply_piece(chat);
+
+        if (!is_thinking)
+        {
+            if (!reply_heading_shown)
+            {
+                write_line("");
+                write_line("Final reply:");
+                reply_heading_shown = true;
+            }
+
+            write(reply_piece);
+        }
     }
 
     write_line("");

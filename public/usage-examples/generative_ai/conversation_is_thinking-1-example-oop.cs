@@ -6,45 +6,63 @@ namespace ConversationIsThinkingExample
     {
         public static void Main()
         {
-            Conversation chat = SplashKit.CreateConversation();
+            Conversation chat = new Conversation(
+                LanguageModel.Qwen306BThinking
+            );
 
-            string question =
-                "Which is heavier, one kilogram of steel or one kilogram " +
-                "of feathers? Explain briefly.";
+            string question = "What is 2 plus 2? Give only the answer.";
 
             SplashKit.WriteLine("Question: " + question);
             SplashKit.WriteLine("");
-            SplashKit.WriteLine("Thinking:");
 
             // Send the question to the language model
-            SplashKit.ConversationAddMessage(chat, question);
+            chat.AddMessage(question);
 
-            bool showingThoughts = true;
+            bool thinkingStarted = false;
+            bool thinkingFinished = false;
+            bool replyHeadingShown = false;
 
-            while (SplashKit.ConversationIsReplying(chat))
+            while (chat.IsReplying())
             {
-                // Separate thinking content from the final reply
-                if (
-                    showingThoughts &&
-                    !SplashKit.ConversationIsThinking(chat)
-                )
+                bool isThinking = chat.IsThinking();
+
+                // Display messages when the thinking state changes
+                if (isThinking && !thinkingStarted)
                 {
-                    SplashKit.WriteLine("");
-                    SplashKit.WriteLine("");
-                    SplashKit.WriteLine("Final reply:");
-                    showingThoughts = false;
+                    SplashKit.WriteLine("The model is thinking...");
+                    thinkingStarted = true;
                 }
 
-                SplashKit.Write(
-                    SplashKit.ConversationGetReplyPiece(chat)
-                );
+                if (
+                    !isThinking &&
+                    thinkingStarted &&
+                    !thinkingFinished
+                )
+                {
+                    SplashKit.WriteLine("Thinking done.");
+                    thinkingFinished = true;
+                }
+
+                string replyPiece = chat.GetReplyPiece();
+
+                if (!isThinking)
+                {
+                    if (!replyHeadingShown)
+                    {
+                        SplashKit.WriteLine("");
+                        SplashKit.WriteLine("Final reply:");
+                        replyHeadingShown = true;
+                    }
+
+                    SplashKit.Write(replyPiece);
+                }
             }
 
             SplashKit.WriteLine("");
             SplashKit.WriteLine("");
             SplashKit.WriteLine("Reply complete.");
 
-            SplashKit.FreeConversation(chat);
+            chat.Free();
         }
     }
 }
