@@ -12,7 +12,6 @@ namespace TrianglesIntersectExample
                 600
             );
 
-            // Define a fixed triangle
             Triangle fixedTriangle = SplashKit.TriangleFrom(
                 SplashKit.PointAt(250, 200),
                 SplashKit.PointAt(400, 150),
@@ -25,7 +24,6 @@ namespace TrianglesIntersectExample
 
                 Point2D mousePoint = SplashKit.MousePosition();
 
-                // Create a triangle that follows the mouse
                 Triangle movingTriangle = SplashKit.TriangleFrom(
                     SplashKit.PointAt(
                         mousePoint.X,
@@ -48,7 +46,6 @@ namespace TrianglesIntersectExample
                     fixedTriangle
                 );
 
-                // Check whether the triangles intersect
                 if (
                     SplashKit.TrianglesIntersect(
                         fixedTriangle,
