@@ -3,7 +3,6 @@ using static SplashKitSDK.SplashKit;
 
 OpenWindow("Moving Triangle Intersection", 800, 600);
 
-// Define a fixed triangle
 Triangle fixedTriangle = TriangleFrom(
     PointAt(250, 200),
     PointAt(400, 150),
@@ -16,7 +15,6 @@ while (!QuitRequested())
 
     Point2D mousePoint = MousePosition();
 
-    // Create a triangle that follows the mouse
     Triangle movingTriangle = TriangleFrom(
         PointAt(mousePoint.X, mousePoint.Y - 60),
         PointAt(mousePoint.X - 60, mousePoint.Y + 40),
@@ -27,7 +25,6 @@ while (!QuitRequested())
 
     DrawTriangle(ColorBlue(), fixedTriangle);
 
-    // Check whether the triangles intersect
     if (TrianglesIntersect(fixedTriangle, movingTriangle))
     {
         DrawTriangle(ColorRed(), movingTriangle);
