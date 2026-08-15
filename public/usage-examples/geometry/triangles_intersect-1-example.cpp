@@ -4,7 +4,6 @@ int main()
 {
     open_window("Moving Triangle Intersection", 800, 600);
 
-    // Define a fixed triangle
     triangle fixed_triangle = triangle_from(
         point_at(250, 200),
         point_at(400, 150),
@@ -17,7 +16,6 @@ int main()
 
         point_2d mouse_point = mouse_position();
 
-        // Create a triangle that follows the mouse
         triangle moving_triangle = triangle_from(
             point_at(mouse_point.x, mouse_point.y - 60),
             point_at(mouse_point.x - 60, mouse_point.y + 40),
@@ -28,7 +26,6 @@ int main()
 
         draw_triangle(color_blue(), fixed_triangle);
 
-        // Check whether the triangles intersect
         if (triangles_intersect(fixed_triangle, moving_triangle))
         {
             draw_triangle(color_red(), moving_triangle);
