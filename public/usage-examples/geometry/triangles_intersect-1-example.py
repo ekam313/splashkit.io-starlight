@@ -3,7 +3,6 @@ from splashkit import *
 
 open_window("Moving Triangle Intersection", 800, 600)
 
-# Define the fixed triangle coordinates
 fixed_x1 = 250
 fixed_y1 = 200
 fixed_x2 = 400
@@ -22,7 +21,6 @@ while not quit_requested():
 
     mouse_point = mouse_position()
 
-    # Define a triangle that follows the mouse
     moving_x1 = mouse_point.x
     moving_y1 = mouse_point.y - 60
     moving_x2 = mouse_point.x - 60
@@ -48,7 +46,6 @@ while not quit_requested():
         fixed_y3
     )
 
-    # Check whether the triangles intersect
     if triangles_intersect(fixed_triangle, moving_triangle):
         draw_triangle(
             color_red(),
